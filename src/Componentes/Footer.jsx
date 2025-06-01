@@ -48,6 +48,18 @@ function Footer() {
                 <span>Buenos Aires, Argentina</span>
               </div>
             </div>
+          </div> 
+
+          <div className="footer__section">
+            <h4 className="footer__section-title">Sobre Nosotros</h4>
+            <div className="footer__contact">
+              
+              <div className="footer__contact-item">
+                <Mail size={16} />
+                <span>Nos apasiona hacer más fácil el acceso a la salud. Esta app fue creada para que pedir un turno médico sea simple y sin complicaciones.</span>
+              </div>
+              
+            </div>
           </div>
 
         </div>
@@ -58,7 +70,7 @@ function Footer() {
         {/* Pie del footer */}
         <div className="footer__bottom">
           <div className="footer__copyright">
-            <p>&copy; {currentYear} Sistema de Reservas Médicas. Todos los derechos reservados.</p>
+            <p>&copy; {currentYear} Sistema de Turnos Médicos. Todos los derechos reservados.</p>
           </div>
           <div className="footer__made-with">
             <span>Hecho con</span>

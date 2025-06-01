@@ -2,53 +2,105 @@
   padding: 2rem;
   max-width: 1000px;
   margin: auto;
+  background: linear-gradient(to bottom right, #f8fafc, #e0f2fe);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .bienvenida {
   text-align: center;
   margin-bottom: 2rem;
+  padding: 2rem 1rem;
+}
+
+.bienvenida h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.bienvenida p {
+  font-size: 1.1rem;
+  color: #475569;
+  margin-top: 0.5rem;
 }
 
 .icono-grande {
-  color: crimson;
+  color: #8b5cf6; /* usando un morado degradado similar */
   margin-top: 1rem;
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 5px rgba(139, 92, 246, 0.6));
 }
 
-.acciones h2 {
-  margin-bottom: 1rem;
-}
-
-.acciones-grid {
+.acciones {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
 }
 
 .accion {
-  background: #f0f4f8;
-  border-radius: 8px;
-  padding: 1rem;
-  text-align: center;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  
 }
 
 .accion:hover {
-  background: #d9e8f1;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 25px rgba(139, 92, 246, 0.4);
 }
 
 .accion span {
-  display: block;
-  margin-top: 0.5rem;
-  font-weight: 500;
+  margin-top: 0.75rem;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.icon-wrapper {
+  background: linear-gradient(to right, #8b5cf6, #7c3aed);
+  padding: 0.7rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.icon-wrapper svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: white;
 }
 
 .consejo {
   display: flex;
   gap: 1rem;
   background: #e6ffe6;
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 2rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-top: 3rem;
   align-items: center;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+}
+
+.consejo svg {
+  color: #10b981;
+  width: 36px;
+  height: 36px;
 }

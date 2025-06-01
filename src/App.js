@@ -20,6 +20,7 @@ function App() {
            <Route path="/header" element={<Header/>} />
           <Route path="/paciente" element={<Paciente/>} />
           <Route path="/profesional" element={<Profesional/>} /> 
+         <Route path="/profesional/disponibilidad" element={<CrearDisponibilidad />} />
           <Route path="/paciente/turnos" element={<Turnos/>} /> 
           <Route path="/profesional/disponibilidad" element={<CrearDisponibilidad />} />
           {/* Acá más adelante podés agregar otras rutas como /login, /panel, etc. */}

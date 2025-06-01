@@ -23,7 +23,8 @@ function Paciente() {
 
       <main className="paciente-main">
         <section className="bienvenida">
-          <h1>Hola, {usuario?.nombre} 👋</h1>
+<h1>Hola, {usuario?.name ? `${usuario.name} ${usuario.apellido}` : 'invitado'} 👋</h1>
+
           <p>Bienvenido a tu espacio de salud</p>
           <Heart className="icono-grande" />
         </section>

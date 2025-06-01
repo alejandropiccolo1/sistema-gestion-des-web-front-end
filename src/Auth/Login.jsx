@@ -23,25 +23,56 @@ function Login() {
   e.preventDefault();
 
   try {
-    const response = await fetch(`http://localhost:4000/usuarios?email=${formData.email}&contraseña=${formData.contraseña}`);
-    const data = await response.json();
+    const response = await fetch("http://localhost:5083/api/Auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: formData.email,
+        contraseña: formData.contraseña
+      })
+    });
 
-    if (data.length > 0) {
-      const usuario = data[0];
-      login(usuario);
-      localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Token recibido:", data.token);
 
-      if (usuario.rol === 'profesional') {
-        navigate('/profesional');
+      const { token } = data;
+
+      // Guardar el token en localStorage
+      localStorage.setItem("token", token);
+
+      // Decodificar el payload del JWT
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("Payload:", payload);
+
+      // Obtener directamente la clave role y especialidad
+      const rol = payload.role;
+      const especialidad = payload.Especialidad;
+
+      console.log("Rol:", rol);
+      console.log("Especialidad:", especialidad);
+
+      // Guardar usuario en el contexto
+      login({
+        rol,
+        email: payload.email,
+        name: payload.unique_name,
+        apellido: payload.apellido,
+        especialidad
+      });
+
+      // Redirigir según el rol
+      if (rol === "profesional") {
+        navigate("/profesional");
       } else {
-        navigate('/paciente');
+        navigate("/paciente");
       }
     } else {
-      alert('Email o contraseña incorrectos');
+      alert("Email o contraseña incorrectos");
     }
   } catch (error) {
-    console.error('Error en el login:', error);
-    alert('Ocurrió un error. Intentalo de nuevo más tarde.');
+    console.error("Error en el login:", error);
+    alert("Ocurrió un error. Intentalo de nuevo más tarde.");
   }
 };
 
