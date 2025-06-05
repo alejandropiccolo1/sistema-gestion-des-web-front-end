@@ -3,7 +3,8 @@ import { Calendar, Clock, Users } from 'lucide-react';
 import Header from '../../Componentes/Header';
 import Footer from '../../Componentes/Footer';
 import '../../styles/Profesional.css';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useStats } from '../../Context/StatsContext'; // Asegurate de usar la ruta correcta
 
 function getUserFromToken() {
   const token = localStorage.getItem('token');
@@ -32,27 +33,40 @@ function getEspecialidad(rol) {
 
 function Profesional() {
   const [usuario, setUsuario] = useState({ nombre: '', apellido: '', rol: '', especialidad: '' });
-  const [turnosHoy,setTurnosHoy] = useState(0);
+  const [turnosDisponiblesHoy, setTurnosDisponiblesHoy] = useState(0); // 👈 Nuevo estado
+  const { pacientesActivos, disponibilidad } = useStats();
+
   const navigate = useNavigate();
   const location = useLocation();
 
+  const fetchTurnosDisponiblesHoy = async () => {
+    const fechaHoy = new Date().toISOString().split("T")[0];
 
-  async function fetchTurnosDisponiblesHoy() {
-  try {
-    const fechaHoy = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const response = await fetch(`http://localhost:5083/api/Disponibilidad?fecha=${fechaHoy}&estado=Disponible`);
-    if (!response.ok) throw new Error('Error al obtener turnos');
-    const turnos = await response.json();
-    setTurnosHoy(turnos.length);
-  } catch (error) {
-    console.error('No se pudieron cargar los turnos disponibles hoy:', error);
-    setTurnosHoy(0);
-  }
-}
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:5083/api/Disponibilidad?fecha=${fechaHoy}&estado=Disponible`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error("Error al obtener turnos");
+
+      const data = await response.json();
+      console.log("Turnos disponibles hoy:", data);
+
+      setTurnosDisponiblesHoy(data.length); // 👈 Guardamos la cantidad de turnos
+    } catch (error) {
+      console.error("No se pudieron cargar los turnos disponibles hoy:", error);
+    }
+  };
+
   useEffect(() => {
     const userFromToken = getUserFromToken();
     if (userFromToken) setUsuario(userFromToken);
-     fetchTurnosDisponiblesHoy();
+    fetchTurnosDisponiblesHoy();
   }, [location]);
 
   const menuItems = [
@@ -87,29 +101,29 @@ function Profesional() {
           <h1>
             Bienvenid@, <span>{`${usuario.nombre} ${usuario.apellido}`.trim()}</span>
           </h1>
-          <p>{ usuario.especialidad || getEspecialidad(usuario.rol)}</p>
+          <p>{usuario.especialidad || getEspecialidad(usuario.rol)}</p>
         </div>
 
         <div className="quick-stats">
           <div className="card stat">
             <Clock className="icon" />
             <div>
-              <h3>{turnosHoy}</h3>
-              
+              <h3>Turnos Disponibles </h3>
+              <p>{turnosDisponiblesHoy}</p>
             </div>
           </div>
           <div className="card stat">
             <Users className="icon" />
             <div>
               <h3>Pacientes Activos</h3>
-              <p>24</p>
+              <p>{pacientesActivos}</p>
             </div>
           </div>
           <div className="card stat">
             <Calendar className="icon" />
             <div>
               <h3>Disponibilidad</h3>
-              <p>72%</p>
+              <p>{disponibilidad}%</p>
             </div>
           </div>
         </div>

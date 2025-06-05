@@ -32,42 +32,39 @@ function Login() {
       })
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      console.log("Token recibido:", data.token);
+   if (response.ok) {
+  const data = await response.json();
+  const { token } = data;
 
-      const { token } = data;
+  localStorage.setItem("token", token);
 
-      // Guardar el token en localStorage
-      localStorage.setItem("token", token);
+  const payload = JSON.parse(atob(token.split(".")[1]));
 
-      // Decodificar el payload del JWT
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      console.log("Payload:", payload);
+  const rol = payload.role;
+  const especialidad = payload.Especialidad;
 
-      // Obtener directamente la clave role y especialidad
-      const rol = payload.role;
-      const especialidad = payload.Especialidad;
+  // Calcular expiración real del token JWT
+  const expSegundos = payload.exp;
+  const expiracionMs = expSegundos * 1000 - Date.now();
 
-      console.log("Rol:", rol);
-      console.log("Especialidad:", especialidad);
+  login(
+    {
+      rol,
+      email: payload.email,
+      name: payload.unique_name,
+      apellido: payload.apellido,
+      especialidad,
+    },
+    expiracionMs
+  );
 
-      // Guardar usuario en el contexto
-      login({
-        rol,
-        email: payload.email,
-        name: payload.unique_name,
-        apellido: payload.apellido,
-        especialidad
-      });
-
-      // Redirigir según el rol
-      if (rol === "profesional") {
-        navigate("/profesional");
-      } else {
-        navigate("/paciente");
-      }
-    } else {
+  if (rol === "profesional") {
+    navigate("/profesional");
+  } else {
+    navigate("/paciente");
+  }
+  }
+    else {
       alert("Email o contraseña incorrectos");
     }
   } catch (error) {

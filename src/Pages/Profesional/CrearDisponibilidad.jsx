@@ -136,7 +136,7 @@ function CrearDisponibilidad() {
       const data = await listaActualizada.json();
       setDisponibilidades(data);
       setContadorTurnos(data.length); // <-- Actualizo contador después de eliminar
-
+      console.log("Contador actualizado:", data.length);
       setMensaje('Turno eliminado');
     } catch {
       setMensaje('Error al eliminar turno');
