@@ -23,25 +23,53 @@ function Login() {
   e.preventDefault();
 
   try {
-    const response = await fetch(`http://localhost:4000/usuarios?email=${formData.email}&contraseña=${formData.contraseña}`);
-    const data = await response.json();
+    const response = await fetch("http://localhost:5083/api/Auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: formData.email,
+        contraseña: formData.contraseña
+      })
+    });
 
-    if (data.length > 0) {
-      const usuario = data[0];
-      login(usuario);
-      localStorage.setItem('usuarioActual', JSON.stringify(usuario));
+   if (response.ok) {
+  const data = await response.json();
+  const { token } = data;
 
-      if (usuario.rol === 'profesional') {
-        navigate('/profesional');
-      } else {
-        navigate('/paciente');
-      }
-    } else {
-      alert('Email o contraseña incorrectos');
+  localStorage.setItem("token", token);
+
+  const payload = JSON.parse(atob(token.split(".")[1]));
+
+  const rol = payload.role;
+  const especialidad = payload.Especialidad;
+
+  // Calcular expiración real del token JWT
+  const expSegundos = payload.exp;
+  const expiracionMs = expSegundos * 1000 - Date.now();
+
+  login(
+    {
+      rol,
+      email: payload.email,
+      name: payload.unique_name,
+      apellido: payload.apellido,
+      especialidad,
+    },
+    expiracionMs
+  );
+
+  if (rol === "profesional") {
+    navigate("/profesional");
+  } else {
+    navigate("/paciente");
+  }
+  }
+    else {
+      alert("Email o contraseña incorrectos");
     }
   } catch (error) {
-    console.error('Error en el login:', error);
-    alert('Ocurrió un error. Intentalo de nuevo más tarde.');
+    console.error("Error en el login:", error);
+    alert("Ocurrió un error. Intentalo de nuevo más tarde.");
   }
 };
 
