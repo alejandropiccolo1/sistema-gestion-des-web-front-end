@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../styles/CrearDisponibilidad.css';
+import Header from '../../Componentes/Header';
+import Footer from '../../Componentes/Footer';
 
 const SolicitarTurno = () => {
   const [turnosDisponibles, setTurnosDisponibles] = useState([]);
@@ -48,6 +50,8 @@ const SolicitarTurno = () => {
   };
 
   return (
+    <>
+    <Header />
     <div className="table-container">
       <h3 className="table-title">Turnos</h3>
       {turnosDisponibles.length === 0 ? (
@@ -107,7 +111,11 @@ const SolicitarTurno = () => {
           </tbody>
         </table>
       )}
+     
     </div>
+    <Footer/>
+    </>
+    
   );
 };
 

@@ -128,3 +128,70 @@
   color: #6b46c1;
   font-weight: 600;
 }
+/* CrearDisponibilidad.css (o un CSS separado para solicitar turno) */
+
+.table-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(107, 70, 193, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.table-title {
+  color: #6b46c1;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th, .table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f3e8ff;
+  color: #6b46c1;
+  font-weight: 600;
+}
+
+.table tbody tr:hover {
+  background-color: #f9f5ff;
+}
+
+.btn-solicitar, .btn-liberar {
+  padding: 0.4rem 1rem;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-solicitar {
+  background-color: #6b46c1;
+  color: white;
+}
+
+.btn-solicitar:hover {
+  background-color: #5936a2;
+}
+
+.btn-liberar {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.btn-liberar:hover {
+  background-color: #9b2c2c;
+}
