@@ -8,7 +8,8 @@ function Registro() {
     email: '',
     contraseña: '',
     rol: 'paciente',
-    especialidad: '' // Nuevo campo para la especialidad
+    especialidad: '',
+    matricula: '' // agregado matricula
   });
 
   const handleChange = (e) => {
@@ -21,6 +22,12 @@ function Registro() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // // Validación simple frontend para matrícula
+    // if (formData.rol === 'profesional' && formData.matricula.trim() === '') {
+    //   alert("La matrícula es obligatoria para profesionales");
+    //   return;
+    // }
+
     try {
       const resPost = await fetch("http://localhost:5083/api/Auth/register", {
         method: "POST",
@@ -32,7 +39,8 @@ function Registro() {
         alert("Usuario registrado correctamente");
         window.location.href = "/login";
       } else {
-        alert("Hubo un error al registrar el usuario.");
+        const errorData = await resPost.json();
+        alert(errorData.message || "Hubo un error al registrar el usuario.");
       }
 
     } catch (error) {
@@ -70,19 +78,31 @@ function Registro() {
             </select>
           </div>
 
-          {/* Mostrar el campo Especialidad solo si el rol es profesional */}
           {formData.rol === 'profesional' && (
-            <div className="form-group">
-              <label>Especialidad:</label>
-              <input
-                type="text"
-                name="especialidad"
-                value={formData.especialidad}
-                onChange={handleChange}
-                placeholder="Ej: Traumatólogo, Psicólogo, etc."
-                required={formData.rol === 'profesional'} // solo requerido si es profesional
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label>Especialidad:</label>
+                <input
+                  type="text"
+                  name="especialidad"
+                  value={formData.especialidad}
+                  onChange={handleChange}
+                  placeholder="Ej: Traumatólogo, Psicólogo, etc."
+                  required
+                />
+              </div>
+              {/* <div className="form-group">
+                <label>Matrícula:</label>
+                <input
+                  type="text"
+                  name="matricula"
+                  value={formData.matricula}
+                  onChange={handleChange}
+                  placeholder="Ej: 12345"
+                  required
+                />
+              </div> */}
+            </>
           )}
 
           <button type="submit">Registrarse</button>

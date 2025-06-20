@@ -1,17 +1,23 @@
 .profesional-container {
-  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
   background: linear-gradient(to bottom right, #f8fafc, #e0f2fe);
-  padding-bottom: 4rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  min-height: 100vh;
 }
 
+/* Encabezado */
 .section-header {
   text-align: center;
-  padding: 3rem 1rem 2rem;
+  margin-bottom: 2rem;
+  padding: 2rem 1rem;
 }
 
 .section-header h1 {
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: 700;
   color: #1e293b;
 }
 
@@ -24,57 +30,43 @@
 .section-header p {
   font-size: 1.1rem;
   color: #475569;
+  margin-top: 0.5rem;
 }
 
-.quick-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  padding: 0 2rem;
-}
-
+/* Acciones */
 .acciones {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
-  padding: 3rem 2rem;
+  padding: 2rem 0;
 }
 
-.card {
+/* Tarjetas */
+.accion {
   background: rgba(255, 255, 255, 0.7);
   border-radius: 1rem;
   padding: 1.5rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(10px);
-}
-
-.stat .icon,
-.accion .icon {
-  color: white;
-  padding: 0.5rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.stat .icon {
-  background: #60a5fa;
-}
-
-.accion {
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .accion:hover {
   transform: translateY(-5px);
+  box-shadow: 0 15px 25px rgba(59, 130, 246, 0.3);
 }
 
 .accion h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
   color: #1e293b;
+  margin-bottom: 0.5rem;
 }
 
 .accion p {
@@ -84,33 +76,27 @@
 }
 
 .accion span {
-  font-weight: 500;
-  color: #6366f1;
-  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 1.1rem;
+  margin-top: 0.75rem;
 }
 
-.accion.purple .icon-wrapper {
-  background: linear-gradient(to right, #8b5cf6, #7c3aed);
-}
-
-.accion.blue .icon-wrapper {
-  background: linear-gradient(to right, #3b82f6, #2563eb);
-}
-
-.accion.green .icon-wrapper {
-  background: linear-gradient(to right, #10b981, #059669);
-}
-
+/* Iconos */
 .icon-wrapper {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  padding: 0.7rem;
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 0.75rem;
   margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
+.icon-wrapper svg,
 .icon {
   width: 1.75rem;
   height: 1.75rem;

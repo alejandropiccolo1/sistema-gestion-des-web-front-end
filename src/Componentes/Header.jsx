@@ -5,18 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import '../styles/Header.css';
 
-const rutasPorRol = {
-  profesional: [
-    { texto: 'Disponibilidad', ruta: '/profesional/disponibilidad', icon: Calendar },
-    { texto: 'Turnos', ruta: '/profesional/turnos', icon: Calendar },
-    { texto: 'Pacientes', ruta: '/profesional/pacientes', icon: User },
-  ],
-  paciente: [
-    { texto: 'Mis Turnos', ruta: '/paciente/turnos', icon: Calendar },
-    { texto: 'Historial', ruta: '/paciente/historial', icon: Stethoscope },
-  ],
-};
-
 const Header = ({ title = 'Sistema de Reservas Médica', mostrarMenu = true }) => {
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
@@ -38,7 +26,9 @@ const Header = ({ title = 'Sistema de Reservas Médica', mostrarMenu = true }) =
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const opciones = rutasPorRol[usuario?.rol] || [];
+
+  // Ya no cargamos opciones del menú para ninguno
+  const opciones = []; // vacio para que no muestre nada
 
   const getRolIcon = (rol) => {
     return rol === 'profesional' ? Stethoscope : User;
@@ -77,18 +67,9 @@ const Header = ({ title = 'Sistema de Reservas Médica', mostrarMenu = true }) =
                     </div>
                   </div>
 
-                  {/* Navegación Desktop */}
+                  {/* Navegación Desktop (vacía) */}
                   <nav className="header__nav">
-                    {opciones.map(({ texto, ruta, icon: Icon }) => (
-                      <button
-                        key={ruta}
-                        onClick={() => navigate(ruta)}
-                        className="header__nav-item"
-                      >
-                        <Icon size={18} />
-                        <span>{texto}</span>
-                      </button>
-                    ))}
+                    {/* Ya no mostramos opciones */}
 
                     <button onClick={handleLogout} className="header__nav-item header__nav-item--logout">
                       <LogOut size={18} />
@@ -119,20 +100,7 @@ const Header = ({ title = 'Sistema de Reservas Médica', mostrarMenu = true }) =
                       </div>
                     </div>
 
-                    {/* Navegación móvil */}
-                    {opciones.map(({ texto, ruta, icon: Icon }) => (
-                      <button
-                        key={ruta}
-                        onClick={() => {
-                          navigate(ruta);
-                          setIsMenuOpen(false);
-                        }}
-                        className="header__mobile-nav-item"
-                      >
-                        <Icon size={20} />
-                        <span>{texto}</span>
-                      </button>
-                    ))}
+                    {/* Navegación móvil vacía */}
 
                     <button onClick={handleLogout} className="header__mobile-nav-item header__mobile-nav-item--logout">
                       <LogOut size={20} />
@@ -151,5 +119,6 @@ const Header = ({ title = 'Sistema de Reservas Médica', mostrarMenu = true }) =
     </>
   );
 };
+
 
 export default Header;

@@ -1,43 +1,113 @@
-import React from 'react';
-import Header from '../../Componentes/Header';
-import Footer from '../../Componentes/Footer';
-const turnosMock = [
-  { fecha: '24/05/2025', desde: '09:00', hasta: '12:00', duracion: '30 min' },
-  { fecha: '25/05/2025', desde: '14:00', hasta: '17:00', duracion: '20 min' }
-];
+import React, { useEffect, useState } from 'react';
+import '../../styles/CrearDisponibilidad.css';
 
 const SolicitarTurno = () => {
-  return (
-    <>
-    <Header/>
-        <div className="table-container">
-      <h3 className="table-title">📅 Turnos disponibles</h3>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Día</th>
-            <th>Desde</th>
-            <th>Hasta</th>
-            <th>Duración</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {turnosMock.map((turno, index) => (
-            <tr key={index}>
-              <td>{turno.fecha}</td>
-              <td>{turno.desde}</td>
-              <td>{turno.hasta}</td>
-              <td>{turno.duracion}</td>
-              <td><button className="btn-reservar">Reservar</button></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <Footer/>
-    </>
+  const [turnosDisponibles, setTurnosDisponibles] = useState([]);
 
+  useEffect(() => {
+    fetch('http://localhost:5083/api/Disponibilidad/disponibles', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const disponibles = data.filter(
+          (turno) => turno.estado === 'Disponible' || turno.estado === 'Reservado'
+        );
+        setTurnosDisponibles(disponibles);
+      })
+      .catch((err) => console.error('Error fetching turnos:', err));
+  }, []);
+
+  const actualizarTurno = async (turno, nuevoEstado) => {
+    const turnoActualizado = {
+      ...turno,
+      estado: nuevoEstado,
+    };
+
+    try {
+      const response = await fetch(`http://localhost:5083/api/Disponibilidad/${turno.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(turnoActualizado),
+      });
+
+      if (!response.ok) throw new Error('Error al actualizar turno');
+
+      // Actualizar estado en frontend
+      setTurnosDisponibles((prev) =>
+        prev.map((t) => (t.id === turno.id ? { ...t, estado: nuevoEstado } : t))
+      );
+    } catch (error) {
+      console.error('Error al cambiar estado del turno:', error);
+    }
+  };
+
+  return (
+    <div className="table-container">
+      <h3 className="table-title">Turnos</h3>
+      {turnosDisponibles.length === 0 ? (
+        <p style={{ textAlign: 'center', color: '#6b46c1' }}>No hay turnos disponibles.</p>
+      ) : (
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Nombre Profesional</th>
+              <th>Apellido Profesional</th>
+              <th>Especialidad</th>
+              <th>Fecha Inicio</th>
+              <th>Hora Inicio</th>
+              <th>Hora Fin</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {turnosDisponibles.map((turno) => {
+              const inicio = new Date(turno.fechaHoraInicio);
+              const fin = new Date(turno.fechaHoraFin);
+
+              const fechaInicio = inicio.toLocaleDateString();
+              const horaInicio = inicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              const horaFin = fin.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+              return (
+                <tr key={turno.id}>
+                  <td>{turno.nombreProfesional}</td>
+                  <td>{turno.apellidoProfesional}</td>
+                  <td>{turno.especialidad}</td>
+                  <td>{fechaInicio}</td>
+                  <td>{horaInicio}</td>
+                  <td>{horaFin}</td>
+                  <td>{turno.estado}</td>
+                  <td>
+                    {turno.estado === 'Disponible' ? (
+                      <button
+                        className="btn-solicitar"
+                        onClick={() => actualizarTurno(turno, 'Reservado')}
+                      >
+                        Solicitar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-liberar"
+                        onClick={() => actualizarTurno(turno, 'Disponible')}
+                      >
+                        Liberar
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 };
 
