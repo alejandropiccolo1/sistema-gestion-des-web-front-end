@@ -77,20 +77,7 @@ function Profesional() {
       color: "purple",
       action: () => navigate("/profesional/disponibilidad")
     },
-    {
-      icon: Clock,
-      title: "Turnos Asignados",
-      description: "Revisá tus citas programadas.",
-      color: "blue",
-      action: () => navigate('/profesional/turnos')
-    },
-    {
-      icon: Users,
-      title: "Pacientes",
-      description: "Administrá tu lista de pacientes.",
-      color: "green",
-      action: () => navigate('/profesional/pacientes')
-    }
+    
   ];
 
   return (
@@ -112,7 +99,7 @@ function Profesional() {
               <p>{turnosDisponiblesHoy}</p>
             </div>
           </div>
-          <div className="card stat">
+          {/* <div className="card stat">
             <Users className="icon" />
             <div>
               <h3>Pacientes Activos</h3>
@@ -125,7 +112,7 @@ function Profesional() {
               <h3>Disponibilidad</h3>
               <p>{disponibilidad}%</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="acciones">

@@ -4,14 +4,14 @@ import Registro from './Auth/Registro';
 import Login from './Auth/Login';
 import Paciente from './Pages/Paciente/Paciente';
 import Profesional from './Pages/Profesional/Profesional';
-import Turnos from './Pages/Turnos/Turnos';
+import SolicitarTurno from './Pages/Paciente/SolicitarTurno';
 import CrearDisponibilidad from './Pages/Profesional/CrearDisponibilidad';
 import Header from './Componentes/Header';
 import Footer from './Componentes/Footer';
 import Protegido from "./Componentes/Protegido";
 import { AuthProvider } from './Context/AuthContext';
 import { StatsProvider } from "./Context/StatsContext";
-
+import TurnosAsignados from './Pages/Profesional/TurnosAsignados';
 function App() {
   return (
     <AuthProvider>
@@ -30,6 +30,11 @@ function App() {
                 <Paciente />
               </Protegido>
             } />
+            <Route path="/paciente/solicitar-turno" element={
+              <Protegido>
+                <SolicitarTurno />
+              </Protegido>
+            } />
 
             <Route path="/profesional" element={
               <Protegido>
@@ -43,9 +48,9 @@ function App() {
               </Protegido>
             } />
 
-            <Route path="/paciente/turnos" element={
+            <Route path="/profesional/turnos-asignados" element={
               <Protegido>
-                <Turnos />
+               <TurnosAsignados />
               </Protegido>
             } />
 

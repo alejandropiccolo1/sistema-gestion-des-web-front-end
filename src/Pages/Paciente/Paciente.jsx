@@ -1,20 +1,21 @@
 import React from 'react';
 import { useAuth } from '../../Context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, FileText, Stethoscope, User, Heart, Activity } from 'lucide-react';
+import { Stethoscope, Heart, Activity } from 'lucide-react';
 import Header from '../../Componentes/Header';
 import Footer from '../../Componentes/Footer';
-import '../../styles/Paciente.css'; // creá este archivo simple
+import '../../styles/Paciente.css';
 
 function Paciente() {
   const { usuario } = useAuth();
   const navigate = useNavigate();
 
+  const { name, apellido } = usuario || {};
+  const nombreCompleto = name ? `${name} ${apellido}` : 'invitado';
+
+  // Solo queda la acción de "Solicitar Turno"
   const acciones = [
-    { titulo: 'Mis Turnos', icon: Calendar, ruta: '/paciente/turnos' },
-    { titulo: 'Historial', icon: FileText, ruta: '/paciente/historial' },
-    { titulo: 'Solicitar Turno', icon: Stethoscope, ruta: '/paciente/solicitar-turno' },
-    { titulo: 'Perfil', icon: User, ruta: '/paciente/perfil' }
+    { titulo: 'Solicitar Turno', icon: Stethoscope, ruta: '/paciente/solicitar-turno' }
   ];
 
   return (
@@ -23,8 +24,7 @@ function Paciente() {
 
       <main className="paciente-main">
         <section className="bienvenida">
-<h1>Hola, {usuario?.name ? `${usuario.name} ${usuario.apellido}` : 'invitado'} 👋</h1>
-
+          <h1>Hola, {nombreCompleto} 👋</h1>
           <p>Bienvenido a tu espacio de salud</p>
           <Heart className="icono-grande" />
         </section>
@@ -32,10 +32,10 @@ function Paciente() {
         <section className="acciones">
           <h2>Acciones rápidas</h2>
           <div className="acciones-grid">
-            {acciones.map((a, i) => (
-              <div key={i} className="accion" onClick={() => navigate(a.ruta)}>
-                <a.icon size={32} />
-                <span>{a.titulo}</span>
+            {acciones.map(({ icon: Icon, titulo, ruta }, i) => (
+              <div key={i} className="accion" onClick={() => navigate(ruta)}>
+                <Icon size={32} />
+                <span>{titulo}</span>
               </div>
             ))}
           </div>
