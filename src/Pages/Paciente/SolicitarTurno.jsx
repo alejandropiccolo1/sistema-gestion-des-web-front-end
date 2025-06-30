@@ -9,66 +9,87 @@ const SolicitarTurno = () => {
   const navigate = useNavigate();
 
   const handleVolver = () => {
-    navigate(-1); // vuelve a la página anterior
-    // Si querés ir al inicio, usá: navigate('/');
+    navigate(-1);
   };
 
-  useEffect(() => {
-    fetch('http://localhost:5083/api/Disponibilidad/disponibles', {
+  // Fetch inicial de turnos disponibles
+  const fetchTurnos = () => {
+    fetch('http://localhost:5083/api/disponibilidad/disponibles', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-      .then((res) => res.json())
-      .then((data) => {
-        const disponibles = data.filter(
-          (turno) => turno.estado === 'Disponible' || turno.estado === 'Reservado'
-        );
-        setTurnosDisponibles(disponibles);
-      })
-      .catch((err) => console.error('Error fetching turnos:', err));
+      .then(res => res.json())
+      .then(data => setTurnosDisponibles(data))
+      .catch(err => console.error('Error fetching turnos:', err));
+  };
+
+  useEffect(() => {
+    fetchTurnos();
   }, []);
 
-  const actualizarTurno = async (turno, nuevoEstado) => {
-    const turnoActualizado = {
-      ...turno,
-      estado: nuevoEstado,
-    };
-
+  // Reservar turno
+  const reservarTurno = async (turnoId) => {
     try {
-      const response = await fetch(`http://localhost:5083/api/Disponibilidad/${turno.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(turnoActualizado),
-      });
-
-      if (!response.ok) throw new Error('Error al actualizar turno');
-
-      // Actualizar estado en frontend
-      setTurnosDisponibles((prev) =>
-        prev.map((t) => (t.id === turno.id ? { ...t, estado: nuevoEstado } : t))
+      const response = await fetch(
+        `http://localhost:5083/api/disponibilidad/reservar/${turnoId}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error(await response.text());
+      // Al reservar, refrescar lista o actualizar estado localmente
+      setTurnosDisponibles(prev =>
+        prev.map(t =>
+          t.id === turnoId ? { ...t, estado: 'Reservado' } : t
+        )
       );
     } catch (error) {
-      console.error('Error al cambiar estado del turno:', error);
+      console.error('Error reservando turno:', error);
+      alert(error.message);
+    }
+  };
+
+  // Cancelar turno
+  const cancelarTurno = async (turnoId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5083/api/disponibilidad/cancelar/${turnoId}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error(await response.text());
+      setTurnosDisponibles(prev =>
+        prev.map(t =>
+          t.id === turnoId ? { ...t, estado: 'Disponible', pacienteId: null } : t
+        )
+      );
+    } catch (error) {
+      console.error('Error cancelando turno:', error);
+      alert(error.message);
     }
   };
 
   return (
     <>
       <Header />
-
       <div className="table-container">
         <button type="button" className="btn-volver" onClick={handleVolver}>
           Volver
         </button>
-
         <h3 className="table-title">Turnos</h3>
 
         {turnosDisponibles.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#6b46c1' }}>No hay turnos disponibles.</p>
+          <p style={{ textAlign: 'center', color: '#6b46c1' }}>
+            No hay turnos disponibles.
+          </p>
         ) : (
           <table className="table">
             <thead>
@@ -84,10 +105,9 @@ const SolicitarTurno = () => {
               </tr>
             </thead>
             <tbody>
-              {turnosDisponibles.map((turno) => {
+              {turnosDisponibles.map(turno => {
                 const inicio = new Date(turno.fechaHoraInicio);
                 const fin = new Date(turno.fechaHoraFin);
-
                 const fechaInicio = inicio.toLocaleDateString();
                 const horaInicio = inicio.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const horaFin = fin.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -101,19 +121,18 @@ const SolicitarTurno = () => {
                     <td>{horaInicio}</td>
                     <td>{horaFin}</td>
                     <td>{turno.estado}</td>
-
                     <td>
                       {turno.estado === 'Disponible' ? (
                         <button
                           className="btn-solicitar"
-                          onClick={() => actualizarTurno(turno, 'Reservado')}
+                          onClick={() => reservarTurno(turno.id)}
                         >
                           Solicitar
                         </button>
                       ) : (
                         <button
                           className="btn-liberar"
-                          onClick={() => actualizarTurno(turno, 'Disponible')}
+                          onClick={() => cancelarTurno(turno.id)}
                         >
                           Liberar
                         </button>
@@ -126,7 +145,6 @@ const SolicitarTurno = () => {
           </table>
         )}
       </div>
-
       <Footer />
     </>
   );
